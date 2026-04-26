@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hóa học 10 — HK2 Cánh Diều</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --ch5: #6366f1;
+    --ch5-light: #eef2ff;
+    --ch5-border: #c7d2fe;
+    --ch6: #059669;
+    --ch6-light: #ecfdf5;
+    --ch6-border: #a7f3d0;
+    --ch7: #d97706;
+    --ch7-light: #fffbeb;
+    --ch7-border: #fde68a;
+    --correct: #16a34a;
+    --correct-bg: #f0fdf4;
+    --correct-border: #86efac;
+    --wrong: #dc2626;
+    --wrong-bg: #fef2f2;
+    --wrong-border: #fca5a5;
+    --radius: 14px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Be Vietnam Pro', -apple-system, sans-serif;
+    background: #f1f5f9;
+    min-height: 100vh;
+    color: #1e293b;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #1e40af 100%);
+    padding: 28px 24px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-inner { max-width: 780px; margin: 0 auto; position: relative; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #e2e8f0; font-size: 11.5px; font-weight: 500;
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+  .hero h1 {
+    color: #fff; font-size: 22px; font-weight: 700; line-height: 1.35;
+    margin-bottom: 6px;
+  }
+  .hero-sub { color: #94a3b8; font-size: 13px; margin-bottom: 20px; }
+  .hero-stats {
+    display: flex; gap: 20px; flex-wrap: wrap;
+  }
+  .stat-pill {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px; padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .stat-pill .icon { font-size: 20px; }
+  .stat-pill .label { color: #94a3b8; font-size: 11px; }
+  .stat-pill .val { color: #fff; font-size: 16px; font-weight: 700; }
+
+  /* ── MAIN CONTENT ── */
+  .container { max-width: 780px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  /* ── TABS ── */
+  .tabs-wrap {
+    background: #fff; border-radius: var(--radius); padding: 8px;
+    box-shadow: var(--shadow); margin-bottom: 16px;
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .tab {
+    flex: 1; min-width: 100px;
+    padding: 9px 12px; border-radius: 10px; border: none;
+    font-family: inherit; font-size: 12.5px; font-weight: 500;
+    cursor: pointer; transition: all .2s; color: #64748b;
+    background: transparent; text-align: center; white-space: nowrap;
+  }
+  .tab:hover { background: #f8fafc; color: #334155; }
+  .tab.on.t0 { background: #1e293b; color: #fff; }
+  .tab.on.t5 { background: var(--ch5); color: #fff; }
+  .tab.on.t6 { background: var(--ch6); color: #fff; }
+  .tab.on.t7 { background: var(--ch7); color: #fff; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap { margin-bottom: 16px; }
+  .progress-info {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 7px;
+  }
+  .progress-label { font-size: 12px; color: #64748b; font-weight: 500; }
+  .progress-pct { font-size: 12px; font-weight: 700; color: #334155; }
+  .progress-bar {
+    height: 8px; background: #e2e8f0; border-radius: 6px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #3b82f6);
+    border-radius: 6px; transition: width .4s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ── QUESTION CARD ── */
+  .qcard {
+    background: #fff; border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+    animation: slideIn .25s ease;
+  }
+  @keyframes slideIn {
+    from { opacity:0; transform: translateY(10px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  .qcard-top {
+    padding: 20px 24px 0;
+  }
+  .qmeta {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .ch-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
+  .ch5-badge { background: var(--ch5-light); color: var(--ch5); border: 1px solid var(--ch5-border); }
+  .ch6-badge { background: var(--ch6-light); color: var(--ch6); border: 1px solid var(--ch6-border); }
+  .ch7-badge { background: var(--ch7-light); color: var(--ch7); border: 1px solid var(--ch7-border); }
+  .qnum-label { font-size: 12px; color: #94a3b8; font-weight: 500; }
+
+  .qtext {
+    font-size: 15.5px; font-weight: 600; line-height: 1.65;
+    color: #0f172a; margin-bottom: 20px;
+  }
+
+  /* ── OPTIONS ── */
+  .options { padding: 0 24px 20px; display: flex; flex-direction: column; gap: 9px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 16px; border-radius: 12px;
+    border: 1.5px solid #e2e8f0; cursor: pointer;
+    transition: all .18s; font-size: 13.5px; line-height: 1.55;
+    background: #fafafa; color: #334155;
+    position: relative; overflow: hidden;
+  }
+  .opt::before {
+    content: ''; position: absolute; inset: 0;
+    background: #6366f1; opacity: 0;
+    transition: opacity .15s;
+  }
+  .opt:hover:not(.disabled) { border-color: #a5b4fc; background: #f0f4ff; }
+  .opt:hover:not(.disabled) .opt-label { background: #6366f1; color: #fff; }
+  .opt-label {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: #e2e8f0; color: #64748b;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+    transition: all .15s;
+  }
+  .opt-text { flex: 1; margin-top: 2px; }
+  .opt.correct { border-color: var(--correct-border); background: var(--correct-bg); color: #166534; }
+  .opt.correct .opt-label { background: var(--correct); color: #fff; }
+  .opt.wrong { border-color: var(--wrong-border); background: var(--wrong-bg); color: #991b1b; }
+  .opt.wrong .opt-label { background: var(--wrong); color: #fff; }
+  .opt.show-correct { border-color: var(--correct-border); background: var(--correct-bg); color: #166534; }
+  .opt.show-correct .opt-label { background: var(--correct); color: #fff; }
+  .opt.disabled { cursor: default; }
+
+  /* result icon */
+  .opt-icon { margin-left: auto; font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ── EXPLAIN ── */
+  .explain {
+    margin: 0 24px 20px;
+    padding: 14px 16px;
+    background: #fffbeb;
+    border-radius: 12px;
+    border-left: 4px solid #fbbf24;
+    font-size: 13px; line-height: 1.7;
+    color: #78350f;
+    animation: fadeIn .3s ease;
+  }
+  .explain-title {
+    font-weight: 700; font-size: 11.5px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 5px; color: #92400e;
+  }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  /* ── NAV BUTTONS ── */
+  .nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 16px; gap: 12px;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 11px 20px; border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    font-family: inherit; font-size: 13.5px; font-weight: 600;
+    cursor: pointer; background: #fff; color: #475569;
+    transition: all .18s; white-space: nowrap;
+  }
+  .btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+  .btn:disabled { opacity: .35; cursor: default; }
+  .btn-next {
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color: #fff; border-color: transparent;
+  }
+  .btn-next:hover { opacity: .9; background: linear-gradient(135deg, #4f46e5, #2563eb); }
+  .qpos-center {
+    font-size: 13px; font-weight: 600; color: #64748b;
+    background: #f1f5f9; padding: 8px 14px; border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  /* ── SCORE BOX (floating) ── */
+  .score-float {
+    position: fixed; bottom: 24px; right: 20px; z-index: 100;
+    background: #1e293b;
+    color: #fff; font-size: 13.5px; font-weight: 600;
+    padding: 12px 20px; border-radius: 40px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .score-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #4ade80;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,.5); }
+    50% { box-shadow: 0 0 0 6px rgba(74,222,128,0); }
+  }
+
+  /* ── SUMMARY ── */
+  .summary {
+    background: #fff; border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .summary-top {
+    background: linear-gradient(135deg, #1e293b, #1e40af);
+    padding: 40px 24px 30px; text-align: center;
+  }
+  .summary-emoji { font-size: 52px; margin-bottom: 8px; }
+  .summary-title { color: #fff; font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .summary-sub { color: #94a3b8; font-size: 13.5px; }
+  .summary-body { padding: 28px 24px; }
+  .score-ring {
+    width: 140px; height: 140px; margin: 0 auto 24px;
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .score-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .score-ring-inner { text-align: center; position: relative; z-index: 1; }
+  .score-big { font-size: 38px; font-weight: 800; color: #0f172a; line-height: 1; }
+  .score-denom { font-size: 15px; color: #94a3b8; }
+  .stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
+  }
+  .stat-card {
+    background: #f8fafc; border-radius: 12px; padding: 16px;
+    text-align: center; border: 1px solid #e2e8f0;
+  }
+  .stat-card .num { font-size: 24px; font-weight: 800; color: #1e293b; }
+  .stat-card .lbl { font-size: 12px; color: #64748b; margin-top: 2px; }
+  .msg-box {
+    background: #f0fdf4; border: 1px solid #86efac;
+    border-radius: 12px; padding: 14px 16px;
+    font-size: 13.5px; color: #166534;
+    text-align: center; margin-bottom: 20px;
+  }
+  .btn-restart {
+    width: 100%; padding: 14px; border-radius: 12px;
+    background: linear-gradient(135deg, #6366f1, #3b82f6);
+    color: #fff; border: none; font-family: inherit;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: opacity .18s;
+  }
+  .btn-restart:hover { opacity: .9; }
+
+  /* ── responsive ── */
+  @media (max-width: 500px) {
+    .hero h1 { font-size: 18px; }
+    .hero-stats { gap: 10px; }
+    .stat-pill { padding: 8px 12px; }
+    .qcard-top, .options { padding-left: 16px; padding-right: 16px; }
+    .explain { margin-left: 16px; margin-right: 16px; }
+    .tab { font-size: 11.5px; padding: 8px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">⚗️ Hóa học lớp 10 · Học kì 2 · Cánh Diều</div>
+    <h1>Ôn tập 100 câu trắc nghiệm</h1>
+    <p class="hero-sub">Luyện đề theo từng chương — có giải thích chi tiết sau mỗi câu</p>
+    <div class="hero-stats">
+      <div class="stat-pill">
+        <span class="icon">🔥</span>
+        <div><div class="label">Chương 5</div><div class="val">Năng lượng · 35 câu</div></div>
+      </div>
+      <div class="stat-pill">
+        <span class="icon">⚡</span>
+        <div><div class="label">Chương 6</div><div class="val">Tốc độ · 30 câu</div></div>
+      </div>
+      <div class="stat-pill">
+        <span class="icon">🧪</span>
+        <div><div class="label">Chương 7</div><div class="val">Halogen · 35 câu</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="tabs-wrap">
+    <button class="tab on t0" onclick="setFilter(0,this)">📋 Tất cả (100)</button>
+    <button class="tab t5" onclick="setFilter(5,this)">🔥 Chương 5 (35)</button>
+    <button class="tab t6" onclick="setFilter(6,this)">⚡ Chương 6 (30)</button>
+    <button class="tab t7" onclick="setFilter(7,this)">🧪 Chương 7 (35)</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span class="progress-label" id="progLabel">Câu 1 / 100</span>
+      <span class="progress-pct" id="progPct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+  </div>
+
+  <div id="qarea"></div>
+
+  <div class="nav">
+    <button class="btn" id="prevBtn" onclick="go(-1)">← Câu trước</button>
+    <span class="qpos-center" id="qpos"></span>
+    <button class="btn btn-next" id="nextBtn" onclick="go(1)">Câu sau →</button>
+  </div>
+</div>
+
+<div class="score-float" id="scoreFloat">
+  <div class="score-dot"></div>
+  <span id="scorebox">Điểm: 0 / 0</span>
+</div>
+
+<script>
+const ALL=[
+{ch:5,q:"Phản ứng nào sau đây là phản ứng TỎA NHIỆT?",o:["Nung vôi: CaCO₃ →(t°) CaO + CO₂","Đốt cháy than: C + O₂ → CO₂","Quang hợp: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂","Điện phân nước: 2H₂O → 2H₂ + O₂"],a:1,e:"Đốt cháy là phản ứng oxi hóa toàn phần, giải phóng nhiệt → tỏa nhiệt. Ba phản ứng còn lại đều cần cung cấp năng lượng (thu nhiệt)."},
+{ch:5,q:"Biến thiên enthalpy ΔrH° của phản ứng tỏa nhiệt có giá trị:",o:["ΔrH° > 0","ΔrH° = 0","ΔrH° < 0","Không xác định được"],a:2,e:"Quy ước: phản ứng tỏa nhiệt giải phóng nhiệt ra môi trường, hệ mất năng lượng → ΔrH° < 0."},
+{ch:5,q:"Điều kiện chuẩn để đo enthalpy tạo thành là:",o:["0°C (273 K), 1 atm","25°C (298 K), 1 bar","100°C (373 K), 1 atm","25°C (298 K), 1 atm"],a:1,e:"Điều kiện chuẩn trong nhiệt hóa học: T = 298 K (25°C), P = 1 bar (không phải 1 atm). Đây là điểm nhiều HS nhầm."},
+{ch:5,q:"Enthalpy tạo thành chuẩn ΔfH° của đơn chất bền (như O₂, C-graphit) bằng:",o:["249 kJ/mol","−249 kJ/mol","0","Phụ thuộc vào từng đơn chất"],a:2,e:"Theo quy ước, enthalpy tạo thành chuẩn của mọi đơn chất ở trạng thái bền nhất = 0."},
+{ch:5,q:"Năng lượng liên kết Eb được định nghĩa là năng lượng:",o:["Tỏa ra khi hình thành 1 mol liên kết","Cần để phá vỡ 1 mol liên kết trong phân tử khí ở điều kiện chuẩn","Cần để tạo thành 1 mol chất từ nguyên tử","Cần để đốt cháy 1 mol chất"],a:1,e:"Eb (bond dissociation energy) là năng lượng cần cung cấp để phá vỡ 1 mol liên kết cộng hóa trị trong phân tử khí → thu nhiệt."},
+{ch:5,q:"Định luật Hess phát biểu: biến thiên enthalpy của phản ứng hóa học:",o:["Phụ thuộc vào chất xúc tác","Phụ thuộc vào con đường phản ứng","Chỉ phụ thuộc vào trạng thái đầu và trạng thái cuối, không phụ thuộc đường đi","Luôn bằng 0"],a:2,e:"Đây là nội dung cốt lõi của Định luật Hess — tính chất hàm trạng thái của enthalpy."},
+{ch:5,q:"Cho: CH₄ + 2O₂ → CO₂ + 2H₂O, ΔrH° = −890 kJ/mol. Phản ứng này là:",o:["Thu nhiệt vì ΔrH° âm","Tỏa nhiệt vì ΔrH° âm","Không tỏa không thu nhiệt","Không xác định được"],a:1,e:"ΔrH° = −890 kJ/mol < 0 → phản ứng tỏa nhiệt (exothermic)."},
+{ch:5,q:"Cho: ΔfH°: CO₂(g) = −393,5; H₂O(l) = −285,8; CH₄(g) = −74,8 kJ/mol. ΔrH° của phản ứng CH₄ + 2O₂ → CO₂ + 2H₂O(l) bằng:",o:["−890,3 kJ/mol","+ 890,3 kJ/mol","−965,1 kJ/mol","−815,5 kJ/mol"],a:0,e:"ΔrH° = [ΔfH°(CO₂) + 2ΔfH°(H₂O)] − [ΔfH°(CH₄) + 0] = (−393,5 + 2×(−285,8)) − (−74,8) = −965,1 + 74,8 = −890,3 kJ/mol."},
+{ch:5,q:"Khi đảo chiều một phản ứng, ΔrH° của phản ứng ngược sẽ:",o:["Giữ nguyên giá trị","Đổi dấu (âm thành dương và ngược lại)","Nhân đôi","Bằng 0"],a:1,e:"A → B: ΔH = +x → B → A: ΔH = −x. Đây là hệ quả của định luật Hess."},
+{ch:5,q:"Phản ứng nào sau đây là phản ứng THU NHIỆT?",o:["C + O₂ → CO₂","Fe + S →(t°) FeS","CaCO₃ →(t°) CaO + CO₂","2H₂ + O₂ → 2H₂O"],a:2,e:"Nung vôi CaCO₃ cần hấp thụ nhiệt lượng lớn mới xảy ra → thu nhiệt (ΔrH° > 0)."},
+{ch:5,q:"Cho Eb: H−H = 436; Cl−Cl = 243; H−Cl = 432 kJ/mol. ΔrH° của H₂ + Cl₂ → 2HCl bằng:",o:["−185 kJ/mol","+ 185 kJ/mol","−679 kJ/mol","+ 432 kJ/mol"],a:0,e:"ΔrH° = Σ Eb(chất đầu) − Σ Eb(sản phẩm) = (436 + 243) − 2×432 = 679 − 864 = −185 kJ/mol."},
+{ch:5,q:"Cho phản ứng: 2SO₂ + O₂ → 2SO₃, ΔrH° = −198 kJ. Nếu có 1 mol SO₂ phản ứng, nhiệt lượng tỏa ra là:",o:["198 kJ","99 kJ","396 kJ","49,5 kJ"],a:1,e:"Phản ứng ghi cho 2 mol SO₂ → tỏa 198 kJ. Với 1 mol SO₂ → tỏa 198/2 = 99 kJ."},
+{ch:5,q:"ΔfH°(H₂O,l) = −285,8; ΔfH°(H₂O,g) = −241,8 kJ/mol. Nhiệt hóa hơi của nước H₂O(l)→H₂O(g) là:",o:["+ 44 kJ/mol","−44 kJ/mol","+ 527,6 kJ/mol","−527,6 kJ/mol"],a:0,e:"ΔH = ΔfH°(H₂O,g) − ΔfH°(H₂O,l) = −241,8 − (−285,8) = +44 kJ/mol > 0 → thu nhiệt (hợp lý vì sôi cần nhiệt)."},
+{ch:5,q:"Cho: (1) C+O₂→CO₂, ΔH₁=−393,5 kJ; (2) H₂+½O₂→H₂O(l), ΔH₂=−285,8 kJ; (3) C₂H₅OH+3O₂→2CO₂+3H₂O, ΔH₃=−1366,8 kJ. ΔfH°(C₂H₅OH) là:",o:["−277,6 kJ/mol","+ 277,6 kJ/mol","−1366,8 kJ/mol","−393,5 kJ/mol"],a:0,e:"ΔfH°(C₂H₅OH) = 2ΔH₁ + 3ΔH₂ − ΔH₃ = 2(−393,5)+3(−285,8)−(−1366,8) = −787−857,4+1366,8 = −277,6 kJ/mol."},
+{ch:5,q:"Cho Eb: C−H=414; O=O=498; C=O(CO₂)=799; O−H=464 kJ/mol. ΔrH° của CH₄+2O₂→CO₂+2H₂O(g) bằng:",o:["−802 kJ/mol","+ 802 kJ/mol","−2652 kJ/mol","−3454 kJ/mol"],a:0,e:"ΔrH° = [4×414+2×498] − [2×799+4×464] = [1656+996] − [1598+1856] = 2652 − 3454 = −802 kJ/mol."},
+{ch:5,q:"Nhiệt tạo thành chuẩn ΔfH° của một chất là:",o:["Nhiệt đốt cháy 1 mol chất đó","Nhiệt kèm sự tạo thành 1 mol chất từ các đơn chất bền ở điều kiện chuẩn","Nhiệt phá vỡ tất cả liên kết trong 1 mol chất","Nhiệt nóng chảy của 1 mol chất"],a:1,e:"Định nghĩa chính xác của enthalpy tạo thành chuẩn (standard enthalpy of formation)."},
+{ch:5,q:"Cho C+O₂→CO₂, ΔrH°=−393,5 kJ/mol. Nhiệt lượng tỏa ra khi đốt 12 g than (C) là:",o:["393,5 kJ","786 kJ","196,75 kJ","4722 kJ"],a:0,e:"M(C)=12 g/mol → 12 g = 1 mol C → Q = 1 × 393,5 = 393,5 kJ."},
+{ch:5,q:"Phát biểu nào sau đây ĐÚNG?",o:["Phản ứng tỏa nhiệt luôn tự xảy ra ở mọi điều kiện","ΔrH° âm có nghĩa phản ứng là tỏa nhiệt","Định luật Hess chỉ áp dụng cho phản ứng có xúc tác","Năng lượng liên kết luôn có giá trị âm"],a:1,e:"ΔrH° < 0 → phản ứng tỏa nhiệt. Lưu ý: tỏa nhiệt không có nghĩa tự xảy ra (cần xét entropy). Eb luôn dương (cần năng lượng để phá vỡ liên kết)."},
+{ch:5,q:"Cho N₂+3H₂→2NH₃, ΔrH°=−92 kJ. ΔfH° của NH₃ là:",o:["−92 kJ/mol","−46 kJ/mol","+ 46 kJ/mol","+ 92 kJ/mol"],a:1,e:"Phản ứng tạo 2 mol NH₃ → tỏa 92 kJ. ΔfH°(NH₃) = −92/2 = −46 kJ/mol."},
+{ch:5,q:"Biến thiên enthalpy tính theo năng lượng liên kết được tính bằng công thức:",o:["ΔrH° = Σ Eb(sp) − Σ Eb(chất đầu)","ΔrH° = Σ Eb(chất đầu) − Σ Eb(sp)","ΔrH° = Σ Eb(chất đầu) + Σ Eb(sp)","ΔrH° = −[Σ Eb(chất đầu) + Σ Eb(sp)]"],a:1,e:"ΔrH° = Σ Eb(chất đầu) − Σ Eb(sản phẩm). Phá vỡ liên kết chất đầu (thu nhiệt +) → hình thành liên kết sản phẩm (tỏa nhiệt −)."},
+{ch:5,q:"Cho phản ứng: A→B+C, ΔH=+120 kJ. Phản ứng ngược B+C→A có ΔH bằng:",o:["+ 120 kJ","−120 kJ","0 kJ","+ 60 kJ"],a:1,e:"Theo định luật Hess, đảo chiều phản ứng → đổi dấu ΔH."},
+{ch:5,q:"Cho: S+O₂→SO₂, ΔH₁=−296 kJ; 2SO₂+O₂→2SO₃, ΔH₂=−198 kJ. ΔfH°(SO₃) bằng:",o:["−395 kJ/mol","+ 395 kJ/mol","−494 kJ/mol","−197 kJ/mol"],a:0,e:"S+3/2 O₂→SO₃: ΔH = ΔH₁ + ½ΔH₂ = −296 + (−99) = −395 kJ/mol."},
+{ch:5,q:"Đốt cháy hoàn toàn 5,6 lít CH₄ (đktc) tỏa ra bao nhiêu kJ? (ΔrH°=−890 kJ/mol)",o:["890 kJ","222,5 kJ","445 kJ","3560 kJ"],a:1,e:"n(CH₄) = 5,6/22,4 = 0,25 mol → Q = 0,25 × 890 = 222,5 kJ."},
+{ch:5,q:"Cho ΔfH°: CO₂=−393,5; H₂O(l)=−285,8; C₃H₈=−103,8 kJ/mol. ΔrH° của C₃H₈+5O₂→3CO₂+4H₂O(l) bằng:",o:["−2219,9 kJ/mol","+ 2219,9 kJ/mol","−2323,7 kJ/mol","−1180,5 kJ/mol"],a:0,e:"ΔrH° = [3(−393,5)+4(−285,8)] − (−103,8) = (−1180,5−1143,2)+103,8 = −2219,9 kJ/mol."},
+{ch:5,q:"Quá trình phá vỡ liên kết hóa học trong phân tử là quá trình:",o:["Tỏa nhiệt (ΔH < 0)","Thu nhiệt (ΔH > 0)","Không đổi nhiệt","Vừa tỏa vừa thu nhiệt"],a:1,e:"Phá vỡ liên kết cần cung cấp năng lượng → quá trình thu nhiệt (ΔH > 0). Ngược lại, hình thành liên kết là tỏa nhiệt."},
+{ch:5,q:"Cho 2H₂+O₂→2H₂O(l), ΔrH°=−572 kJ. ΔfH° của H₂O(l) là:",o:["−572 kJ/mol","−286 kJ/mol","+ 286 kJ/mol","+ 572 kJ/mol"],a:1,e:"Phản ứng tạo 2 mol H₂O → ΔrH° = −572 kJ. ΔfH°(H₂O) = −572/2 = −286 kJ/mol."},
+{ch:5,q:"Đốt cháy 1 mol C₂H₂ tỏa 1299 kJ. Đốt cháy 26 g C₂H₂ (M=26) tỏa ra:",o:["649,5 kJ","1299 kJ","2598 kJ","433 kJ"],a:1,e:"M(C₂H₂)=26 g/mol → 26 g = 1 mol → tỏa 1299 kJ."},
+{ch:5,q:"Cho Eb: N≡N=945; H−H=436; N−H=391 kJ/mol. ΔrH° của N₂+3H₂→2NH₃ bằng:",o:["−93 kJ/mol","+ 93 kJ/mol","−2346 kJ/mol","−2253 kJ/mol"],a:0,e:"ΔrH° = (945+3×436) − (2×3×391) = (945+1308) − 2346 = 2253 − 2346 = −93 kJ/mol."},
+{ch:5,q:"Phản ứng nào có ΔrH° bằng ΔfH° của H₂O(l)?",o:["2H₂+O₂→2H₂O(l)","H₂+½O₂→H₂O(l)","H₂O(g)→H₂O(l)","H₂+O→H₂O(l)"],a:1,e:"ΔfH° là nhiệt tạo thành 1 mol chất từ đơn chất bền. H₂+½O₂→H₂O(l) tạo đúng 1 mol H₂O từ đơn chất."},
+{ch:5,q:"Để thu được 34 g NH₃ (M=17) từ N₂+3H₂→2NH₃, ΔrH°=−92 kJ, nhiệt tỏa ra là:",o:["46 kJ","92 kJ","184 kJ","23 kJ"],a:1,e:"34 g NH₃ = 2 mol NH₃. Phương trình tạo 2 mol NH₃ → tỏa 92 kJ → Q = 92 kJ."},
+{ch:5,q:"Cho: C+½O₂→CO, ΔH₁=−110,5 kJ; C+O₂→CO₂, ΔH₂=−393,5 kJ. ΔrH° của CO+½O₂→CO₂ bằng:",o:["−283 kJ","+ 283 kJ","−504 kJ","−393,5 kJ"],a:0,e:"ΔH = ΔH₂ − ΔH₁ = −393,5 − (−110,5) = −283 kJ (theo định luật Hess)."},
+{ch:5,q:"Cho Eb: C=C=614; H−H=436; C−C=347; C−H=414 kJ/mol. ΔrH° của C₂H₄+H₂→C₂H₆ bằng:",o:["−125 kJ/mol","+ 125 kJ/mol","−2706 kJ/mol","+ 2831 kJ/mol"],a:0,e:"ΔrH° = (614+4×414+436) − (347+6×414) = 2706 − 2831 = −125 kJ/mol."},
+{ch:5,q:"Cho: ΔfH°: Fe₂O₃=−824,2; CO=−110,5; CO₂=−393,5 kJ/mol. ΔrH° của Fe₂O₃+3CO→2Fe+3CO₂ bằng:",o:["−24,8 kJ","+ 24,8 kJ","−1180,5 kJ","+ 1155,7 kJ"],a:0,e:"ΔrH° = [0+3(−393,5)] − [−824,2+3(−110,5)] = −1180,5 − (−1155,7) = −24,8 kJ."},
+{ch:5,q:"Ứng dụng nào KHÔNG dựa trên phản ứng tỏa nhiệt?",o:["Đốt nhiên liệu trong động cơ xe","Hàn xì bằng khí acetylene","Quang hợp của cây xanh","Sưởi ấm bằng than củi"],a:2,e:"Quang hợp là phản ứng thu nhiệt: cây hấp thụ năng lượng ánh sáng để tổng hợp chất hữu cơ."},
+{ch:5,q:"Phát biểu nào SAI về enthalpy tạo thành chuẩn?",o:["ΔfH°(đơn chất bền) = 0","ΔfH° đo ở 298 K và 1 bar","ΔfH° luôn có giá trị âm","ΔfH° tính cho 1 mol sản phẩm"],a:2,e:"ΔfH° có thể dương (thu nhiệt) hoặc âm (tỏa nhiệt). Ví dụ ΔfH°(NO) = +90,3 kJ/mol > 0."},
+{ch:5,q:"Phản ứng có ΔrH° = +225 kJ và ΔrH° = −225 kJ. So sánh đúng là:",o:["Phản ứng ΔrH°=+225 tỏa nhiệt nhiều hơn","Phản ứng ΔrH°=−225 tỏa nhiệt và có trị tuyệt đối bằng nhau","Phản ứng ΔrH°=+225 thu nhiệt 225 kJ; phản ứng ΔrH°=−225 tỏa nhiệt 225 kJ","Hai phản ứng đều không trao đổi nhiệt"],a:2,e:"ΔrH° > 0 → thu nhiệt. ΔrH° < 0 → tỏa nhiệt. |ΔrH°| = 225 kJ là lượng nhiệt trao đổi."},
+// ===== CHƯƠNG 6 =====
+{ch:6,q:"Tốc độ phản ứng hóa học được định nghĩa là:",o:["Lượng chất phản ứng tiêu thụ trong 1 giờ","Độ biến thiên nồng độ của chất trong một đơn vị thời gian","Khối lượng sản phẩm tạo thành trong 1 phút","Số mol chất phản ứng trong 1 giây"],a:1,e:"v = ΔC/Δt (mol/L·s hoặc mol/L·min). Đây là định nghĩa tốc độ phản ứng (reaction rate)."},
+{ch:6,q:"Đơn vị phổ biến của tốc độ phản ứng là:",o:["mol/L","mol/L·s","kJ/mol","mol·s"],a:1,e:"Tốc độ = nồng độ / thời gian → đơn vị: mol/L·s hoặc mol/L·min."},
+{ch:6,q:"Yếu tố nào sau đây KHÔNG ảnh hưởng đến tốc độ phản ứng?",o:["Nồng độ chất phản ứng","Nhiệt độ","Màu sắc của dung dịch","Chất xúc tác"],a:2,e:"Màu sắc không ảnh hưởng đến tốc độ. Tốc độ phụ thuộc: nồng độ, nhiệt độ, áp suất, diện tích bề mặt, xúc tác."},
+{ch:6,q:"Chất xúc tác làm tăng tốc độ phản ứng bằng cách:",o:["Tăng nồng độ chất phản ứng","Giảm năng lượng hoạt hóa Eₐ","Tăng nhiệt độ phản ứng","Tăng áp suất hệ phản ứng"],a:1,e:"Xúc tác tạo con đường phản ứng mới với Eₐ thấp hơn → nhiều phân tử có đủ năng lượng để phản ứng → tăng tốc độ."},
+{ch:6,q:"Cho phản ứng: N₂+3H₂→2NH₃. Hệ thức đúng giữa tốc độ tính theo N₂ và H₂ là:",o:["v(N₂) = v(H₂)","v(N₂) = 3v(H₂)","3v(N₂) = v(H₂)","v(N₂) = 2v(H₂)"],a:2,e:"v(N₂)/1 = v(H₂)/3 → 3v(N₂) = v(H₂). Tốc độ tỉ lệ với hệ số tỉ lượng."},
+{ch:6,q:"Nung nóng làm tăng tốc độ phản ứng vì:",o:["Tăng nồng độ chất phản ứng","Làm thay đổi cơ chế phản ứng","Tăng tần số va chạm và số va chạm hiệu quả giữa các phân tử","Giảm năng lượng hoạt hóa Eₐ"],a:2,e:"Nhiệt độ tăng → phân tử chuyển động nhanh hơn → va chạm nhiều hơn và mạnh hơn → số va chạm hiệu quả tăng."},
+{ch:6,q:"Nghiền nhỏ chất rắn làm tăng tốc độ phản ứng dị thể vì:",o:["Tăng nhiệt độ phản ứng","Tăng diện tích bề mặt tiếp xúc","Tăng áp suất","Giảm năng lượng hoạt hóa"],a:1,e:"Nghiền nhỏ → nhiều hạt nhỏ → tổng diện tích bề mặt tăng → tiếp xúc nhiều hơn → tốc độ tăng."},
+{ch:6,q:"Hệ số nhiệt độ Van't Hoff γ=3. Khi tăng nhiệt độ từ 20°C lên 50°C, tốc độ phản ứng tăng:",o:["9 lần","27 lần","3 lần","81 lần"],a:1,e:"ΔT=30°C → v₂/v₁ = γ^(ΔT/10) = 3^(30/10) = 3³ = 27 lần."},
+{ch:6,q:"Va chạm hiệu quả là va chạm:",o:["Giữa mọi phân tử chất phản ứng","Đủ năng lượng VÀ đúng hướng","Chỉ cần đủ năng lượng, không cần đúng hướng","Xảy ra ở nhiệt độ cao"],a:1,e:"Theo thuyết va chạm: va chạm hiệu quả = va chạm có đủ Eₐ + đúng hướng → mới tạo sản phẩm."},
+{ch:6,q:"Cho phản ứng: 2SO₂+O₂→2SO₃. Nếu tốc độ mất SO₂ là 0,04 mol/L·s thì tốc độ tạo SO₃ là:",o:["0,02 mol/L·s","0,04 mol/L·s","0,08 mol/L·s","0,01 mol/L·s"],a:1,e:"v(SO₂)/2 = v(SO₃)/2 → v(SO₃) = v(SO₂) = 0,04 mol/L·s. Hệ số bằng nhau nên tốc độ bằng nhau."},
+{ch:6,q:"Phát biểu nào SAI về chất xúc tác?",o:["Làm giảm Eₐ của phản ứng","Không bị tiêu thụ sau phản ứng","Làm thay đổi ΔrH° của phản ứng","Có thể là axit, bazơ hoặc kim loại"],a:2,e:"Xúc tác không thay đổi ΔrH° (trạng thái đầu và cuối không đổi), chỉ giảm Eₐ (thay đổi đường đi)."},
+{ch:6,q:"Áp suất ảnh hưởng đến tốc độ phản ứng chủ yếu đối với hệ:",o:["Chất lỏng","Chất rắn","Chất khí","Hệ rắn-lỏng"],a:2,e:"Tăng áp suất → tăng nồng độ chất khí → tăng tốc độ. Với chất lỏng/rắn, áp suất hầu như không ảnh hưởng."},
+{ch:6,q:"Enzyme được gọi là:",o:["Chất xúc tác vô cơ","Chất ức chế sinh học","Chất xúc tác sinh học","Chất phản ứng sinh học"],a:2,e:"Enzyme (biological catalyst) là protein có khả năng xúc tác các phản ứng sinh hóa trong cơ thể sống."},
+{ch:6,q:"Nồng độ ban đầu [A]=0,8 mol/L, sau 20 giây [A]=0,6 mol/L. Tốc độ trung bình là:",o:["0,01 mol/L·s","0,04 mol/L·s","0,1 mol/L·s","0,02 mol/L·s"],a:0,e:"v = ΔC/Δt = (0,8−0,6)/20 = 0,2/20 = 0,01 mol/L·s."},
+{ch:6,q:"Phức chất hoạt động (transition state) là:",o:["Sản phẩm cuối của phản ứng","Chất xúc tác trung gian","Trạng thái trung gian có năng lượng cao nhất trên đường phản ứng","Chất đầu của phản ứng"],a:2,e:"Phức chất hoạt động (activated complex) nằm ở đỉnh năng lượng trên đường phản ứng, rất không bền."},
+{ch:6,q:"γ=2. Tốc độ ở 70°C gấp bao nhiêu lần tốc độ ở 30°C?",o:["4 lần","8 lần","16 lần","2 lần"],a:2,e:"ΔT=40°C → v₂/v₁ = 2^(40/10) = 2⁴ = 16 lần."},
+{ch:6,q:"Trong phản ứng H₂+Cl₂→2HCl, nếu v(HCl)=0,06 mol/L·s thì v(Cl₂) là:",o:["0,06 mol/L·s","0,03 mol/L·s","0,12 mol/L·s","0,01 mol/L·s"],a:1,e:"v(HCl)/2 = v(Cl₂)/1 → v(Cl₂) = v(HCl)/2 = 0,06/2 = 0,03 mol/L·s."},
+{ch:6,q:"Năng lượng hoạt hóa Eₐ càng nhỏ thì:",o:["Phản ứng xảy ra càng chậm","Phản ứng xảy ra càng nhanh","Không ảnh hưởng tốc độ","ΔrH° càng âm"],a:1,e:"Eₐ nhỏ → nhiều phân tử có đủ năng lượng vượt rào → số va chạm hiệu quả nhiều → phản ứng nhanh."},
+{ch:6,q:"Tốc độ phản ứng ở 60°C là 0,08 mol/L·s, γ=2. Tốc độ ở 40°C là:",o:["0,04 mol/L·s","0,02 mol/L·s","0,16 mol/L·s","0,32 mol/L·s"],a:1,e:"v(40) = v(60)/γ^((60−40)/10) = 0,08/2² = 0,08/4 = 0,02 mol/L·s."},
+{ch:6,q:"Phản ứng: 2HI(g)→H₂+I₂. [HI] giảm từ 0,5 xuống 0,3 mol/L trong 10 phút. Tốc độ tạo H₂ là:",o:["0,02 mol/L·min","0,01 mol/L·min","0,04 mol/L·min","0,005 mol/L·min"],a:1,e:"v(HI) = 0,2/10 = 0,02 mol/L·min. v(H₂) = v(HI)/2 = 0,01 mol/L·min."},
+{ch:6,q:"Trường hợp nào tốc độ phản ứng KHÔNG thay đổi khi tăng áp suất?",o:["N₂(g)+3H₂(g)→2NH₃(g)","2SO₂(g)+O₂(g)→2SO₃(g)","NaCl(dd)+AgNO₃(dd)→AgCl↓+NaNO₃(dd)","CH₄(g)+2O₂(g)→CO₂(g)+2H₂O(g)"],a:2,e:"Phản ứng trong dung dịch (lỏng): tăng áp suất không ảnh hưởng đến nồng độ → không ảnh hưởng tốc độ."},
+{ch:6,q:"Phản ứng nào tốc độ phụ thuộc nhiều nhất vào diện tích bề mặt?",o:["HCl+NaOH→NaCl+H₂O (dung dịch)","H₂+Cl₂→2HCl (pha khí)","Zn(rắn)+HCl(dung dịch)→ZnCl₂+H₂↑","NaCl tan trong nước"],a:2,e:"Phản ứng dị thể (rắn-lỏng): Zn + HCl. Diện tích bề mặt Zn quyết định diện tích tiếp xúc → ảnh hưởng lớn nhất."},
+{ch:6,q:"γ=3. Ở nhiệt độ nào tốc độ tăng 9 lần so với ở 20°C?",o:["30°C","40°C","50°C","60°C"],a:1,e:"9 = 3^((T−20)/10) → (T−20)/10 = 2 → T−20 = 20 → T = 40°C."},
+{ch:6,q:"Cho: 2NO+O₂→2NO₂. v(NO)=0,06 mol/L·s. Tốc độ tạo NO₂ và tiêu thụ O₂ lần lượt là:",o:["0,06 và 0,03 mol/L·s","0,03 và 0,06 mol/L·s","0,12 và 0,06 mol/L·s","0,06 và 0,06 mol/L·s"],a:0,e:"v(NO₂)/2=v(NO)/2 → v(NO₂)=0,06. v(O₂)/1=v(NO)/2 → v(O₂)=0,03 mol/L·s."},
+{ch:6,q:"Tốc độ phản ứng theo thời gian (nồng độ chất đầu giảm dần) sẽ:",o:["Tăng dần","Không đổi","Giảm dần","Tăng rồi giảm"],a:2,e:"Nồng độ chất đầu giảm → số va chạm hiệu quả giảm → tốc độ giảm dần. Đây là quy luật chung."},
+{ch:6,q:"Trong sản xuất amoniac công nghiệp, dùng Fe/Al₂O₃ làm xúc tác nhằm:",o:["Tăng hiệu suất phản ứng nhiệt động học","Tăng tốc độ phản ứng bằng cách giảm Eₐ","Tăng nhiệt độ phản ứng","Thay đổi sản phẩm phản ứng"],a:1,e:"Xúc tác Fe/Al₂O₃ làm giảm Eₐ → phản ứng N₂+3H₂→2NH₃ xảy ra nhanh hơn ở nhiệt độ công nghiệp (~450°C)."},
+{ch:6,q:"Cho phản ứng có tốc độ ban đầu v₀=0,05 mol/L·s. Sau 2 phút [chất đầu] còn lại 40%. Nhận xét đúng:",o:["Tốc độ tăng theo thời gian","Tốc độ không đổi","Tốc độ giảm do nồng độ chất đầu giảm","Không đủ dữ liệu để nhận xét"],a:2,e:"[Chất đầu] giảm → tốc độ phản ứng giảm theo thời gian. Đây là đặc điểm của hầu hết phản ứng hóa học."},
+{ch:6,q:"Điều nào ĐÚNG theo thuyết va chạm (collision theory)?",o:["Mọi va chạm đều dẫn đến phản ứng","Tăng nhiệt độ không làm tăng số va chạm","Chỉ va chạm đủ năng lượng VÀ đúng hướng mới gây phản ứng","Xúc tác làm tăng tổng số va chạm"],a:2,e:"Thuyết va chạm: phản ứng xảy ra khi va chạm có đủ Eₐ (threshold energy) và hướng phù hợp cho sự tạo/phá vỡ liên kết."},
+{ch:6,q:"Tốc độ phản ứng ở 10°C là 0,02 mol/L·s, γ=2. Tốc độ ở 40°C là:",o:["0,04 mol/L·s","0,08 mol/L·s","0,16 mol/L·s","0,32 mol/L·s"],a:2,e:"ΔT=30°C → v₂ = v₁ × 2^(30/10) = 0,02 × 8 = 0,16 mol/L·s."},
+{ch:6,q:"Cho 4 yếu tố sau. Yếu tố nào ảnh hưởng NHẤT đến tốc độ phản ứng đốt cháy than trong không khí?",o:["Kích thước hạt than","Nhiệt độ","Nồng độ O₂","Áp suất khí quyển"],a:1,e:"Nhiệt độ ảnh hưởng mạnh nhất (theo quy tắc Van't Hoff, tăng 10°C → tốc độ tăng 2-4 lần). Trong thực tế thổi gió mạnh cũng tăng nồng độ O₂."},
+// ===== CHƯƠNG 7 =====
+{ch:7,q:"Nhóm halogen (nhóm VIIA) gồm các nguyên tố:",o:["F, Cl, Br, I, At","F, Cl, Br, I, Xe","Cl, Br, I, At, Rn","F, Cl, Br, I, Kr"],a:0,e:"Nhóm halogen (Group 17): F (fluorine), Cl (chlorine), Br (bromine), I (iodine), At (astatine)."},
+{ch:7,q:"Cấu hình electron lớp ngoài cùng của tất cả halogen là:",o:["ns²np³","ns²np⁵","ns²np⁶","ns²np⁴"],a:1,e:"Halogen có 7e lớp ngoài cùng: ns²np⁵. Cần thêm 1e để đạt cấu hình bền 8e (ns²np⁶)."},
+{ch:7,q:"Trong nhóm VIIA từ F đến I, tính oxi hóa thay đổi như thế nào?",o:["Tăng dần","Giảm dần","Không đổi","Không có quy luật"],a:1,e:"Từ F→I: bán kính tăng → khả năng hút e giảm → tính oxi hóa (oxidizing power) giảm dần. F mạnh nhất."},
+{ch:7,q:"Ở điều kiện thường (25°C), halogen nào tồn tại ở thể LỎNG?",o:["F₂","Cl₂","Br₂","I₂"],a:2,e:"Br₂ (bromine) là chất lỏng màu nâu đỏ ở điều kiện thường. F₂, Cl₂: khí; I₂: rắn."},
+{ch:7,q:"Màu sắc của khí Cl₂ là:",o:["Không màu","Vàng lục","Nâu đỏ","Tím đen"],a:1,e:"Cl₂ là khí màu vàng lục (yellow-green), mùi hắc, rất độc."},
+{ch:7,q:"Sản phẩm của phản ứng 2Fe + 3Cl₂ → ? là:",o:["FeCl₂","FeCl₃","Fe₂Cl₃","FeCl"],a:1,e:"Cl₂ là chất oxi hóa mạnh, oxi hóa Fe lên trạng thái +3 → FeCl₃. (Với S, Fe chỉ lên +2)."},
+{ch:7,q:"Phản ứng của Cl₂ với dung dịch NaOH (loãng, nguội) tạo ra:",o:["NaCl và NaClO₃","NaClO và HCl","NaCl, NaClO và H₂O","NaCl và O₂"],a:2,e:"Cl₂ + 2NaOH → NaCl + NaClO + H₂O (nước Javel). Đây là phản ứng dị tỉ (comproportionation)."},
+{ch:7,q:"'Nước Javel' là dung dịch hỗn hợp chứa:",o:["NaCl và NaOH","NaCl và NaClO","NaClO và NaOH","NaCl và HClO"],a:1,e:"Nước Javel gồm NaCl + NaClO trong nước. NaClO (sodium hypochlorite) là chất có tính tẩy trắng, diệt khuẩn."},
+{ch:7,q:"Sản phẩm của phản ứng Cl₂ + H₂O (thuận nghịch) là:",o:["HCl và HClO","HCl và O₂","HClO và H₂","HClO₃ và HCl"],a:0,e:"Cl₂ + H₂O ⇌ HCl + HClO (nước clo). HClO (axit hipoclorơ) có tính oxi hóa mạnh → tẩy trắng, diệt khuẩn."},
+{ch:7,q:"Thuốc thử để nhận biết ion Cl⁻ trong dung dịch là:",o:["Dung dịch NaOH","Dung dịch AgNO₃","Dung dịch BaCl₂","Dung dịch H₂SO₄"],a:1,e:"Ag⁺ + Cl⁻ → AgCl↓ (trắng, không tan trong HNO₃). Đây là phản ứng đặc trưng nhận biết ion halide."},
+{ch:7,q:"Kết tủa AgCl có màu gì?",o:["Vàng","Nâu đỏ","Trắng","Đen"],a:2,e:"AgCl: trắng; AgBr: vàng nhạt; AgI: vàng. Cả ba đều không tan trong HNO₃ loãng."},
+{ch:7,q:"Halogen nào có tính oxi hóa MẠNH NHẤT?",o:["Cl₂","Br₂","I₂","F₂"],a:3,e:"F₂ có tính oxi hóa mạnh nhất do độ âm điện lớn nhất (3,98) và bán kính nhỏ nhất → hút e mạnh nhất."},
+{ch:7,q:"Cl₂ không tác dụng trực tiếp với chất nào ở điều kiện thường?",o:["Na","Fe","O₂","H₂"],a:2,e:"Cl₂ không phản ứng trực tiếp với O₂ trong điều kiện thông thường (do cả hai đều có tính oxi hóa)."},
+{ch:7,q:"Axit hydrohalic nào là axit YẾU?",o:["HCl","HBr","HI","HF"],a:3,e:"HF là axit yếu vì liên kết H−F rất bền (năng lượng liên kết cao). HCl, HBr, HI đều là axit mạnh, độ mạnh tăng từ HCl→HI."},
+{ch:7,q:"Phương trình điều chế Cl₂ trong PHÒNG THÍ NGHIỆM đúng là:",o:["MnO₂+4HCl(đặc)→MnCl₂+Cl₂↑+2H₂O","NaCl+H₂SO₄(loãng)→NaHSO₄+HCl","2NaCl→điện phân→2Na+Cl₂","4HCl+O₂→2Cl₂+2H₂O"],a:0,e:"PTN: MnO₂ + 4HCl(đặc) →(t°) MnCl₂ + Cl₂↑ + 2H₂O. MnO₂ oxi hóa HCl thành Cl₂."},
+{ch:7,q:"Trong phản ứng Cl₂+2NaBr→2NaCl+Br₂, Cl₂ đóng vai trò:",o:["Chất khử","Chất oxi hóa","Vừa oxi hóa vừa khử","Môi trường"],a:1,e:"Cl₂ (số oxi hóa 0) → Cl⁻ (số oxi hóa −1): giảm → Cl₂ là chất oxi hóa. Br⁻ → Br₂ (bị oxi hóa)."},
+{ch:7,q:"Phản ứng nào SAI theo thứ tự tính oxi hóa của halogen?",o:["Cl₂+2NaBr→2NaCl+Br₂","Br₂+2NaI→2NaBr+I₂","I₂+2NaCl→2NaI+Cl₂","Cl₂+2NaI→2NaCl+I₂"],a:2,e:"I₂ yếu hơn Cl₂ nên I₂ không thể đẩy Cl₂ ra khỏi NaCl. Phản ứng ngược chiều mới đúng: Cl₂+2NaI→2NaCl+I₂."},
+{ch:7,q:"HF khác HCl, HBr, HI vì:",o:["HF là khí duy nhất","HF là axit yếu và ăn mòn được thủy tinh (SiO₂)","HF không tan trong nước","HF không có tính axit"],a:1,e:"4HF + SiO₂ → SiF₄ + 2H₂O. HF ăn mòn thủy tinh → đựng trong bình nhựa. HF là axit yếu (Kₐ ≈ 6,8×10⁻⁴)."},
+{ch:7,q:"Clorua vôi có công thức hóa học là:",o:["Ca(ClO)₂","CaCl₂·Ca(ClO)₂","CaCl(ClO)","Ca(OH)₂·CaCl₂"],a:2,e:"Clorua vôi (bleaching powder): CaCl(ClO) — muối hỗn hợp của Ca²⁺ với Cl⁻ và ClO⁻."},
+{ch:7,q:"Tính tẩy màu của nước clo chủ yếu là do:",o:["HCl trong nước clo","HClO (axit hipoclorơ) trong nước clo","Cl₂ hòa tan trong nước","O₂ giải phóng từ Cl₂"],a:1,e:"HClO có tính oxi hóa rất mạnh → phá vỡ chất màu → tẩy trắng và diệt khuẩn. Cl₂ tự nó ít có tác dụng tẩy màu hơn."},
+{ch:7,q:"Khi nhỏ dung dịch AgNO₃ vào dung dịch NaI, hiện tượng quan sát được là:",o:["Kết tủa trắng","Kết tủa vàng nhạt","Kết tủa vàng","Không có hiện tượng"],a:2,e:"Ag⁺ + I⁻ → AgI↓ (vàng). Lưu ý: AgCl trắng, AgBr vàng nhạt, AgI vàng — độ tan giảm dần."},
+{ch:7,q:"Halogen nào được dùng để tẩy trắng trong công nghiệp dệt, giấy và khử trùng nước máy?",o:["F₂","Cl₂","Br₂","I₂"],a:1,e:"Cl₂ và hợp chất (NaClO, Ca(OCl)₂) được dùng rộng rãi để tẩy trắng và khử trùng nước."},
+{ch:7,q:"Thuốc thử nào dùng để nhận biết hồ tinh bột?",o:["Cho Cl₂ vào → dung dịch mất màu","Cho I₂ vào → dung dịch chuyển xanh tím","Cho HCl vào → kết tủa trắng","Cho AgNO₃ vào → kết tủa vàng"],a:1,e:"I₂ tác dụng với tinh bột tạo phức màu xanh tím đặc trưng. Đây là phản ứng nhận biết tinh bột và I₂."},
+{ch:7,q:"Trong công nghiệp, Cl₂ được sản xuất chủ yếu bằng phương pháp:",o:["Đốt cháy NaCl trong O₂","Điện phân dung dịch NaCl bão hòa (có màng ngăn)","Cho MnO₂ tác dụng HCl đặc, đun nóng","Đun nóng HCl với H₂SO₄ đặc"],a:1,e:"Điện phân dd NaCl: 2NaCl + 2H₂O →(đpdd, màng ngăn) Cl₂↑ + H₂↑ + 2NaOH. Sản phẩm: Cl₂, H₂, NaOH."},
+{ch:7,q:"Số oxi hóa của Cl trong HClO là:",o:["−1","0","+1","+3"],a:2,e:"HClO: H(+1) + Cl(x) + O(−2) = 0 → x = +1. Cl có số oxi hóa +1 trong hợp chất này."},
+{ch:7,q:"Cho 0,1 mol Cl₂ tác dụng với dung dịch NaOH dư. Khối lượng NaCl tạo thành là:",o:["11,7 g","5,85 g","2,925 g","7,1 g"],a:1,e:"Cl₂+2NaOH→NaCl+NaClO+H₂O. 0,1 mol Cl₂→0,1 mol NaCl. m(NaCl)=0,1×58,5=5,85 g."},
+{ch:7,q:"Thể tích Cl₂ (đktc) để tạo 0,5 mol HCl theo phản ứng H₂+Cl₂→2HCl là:",o:["11,2 L","5,6 L","2,8 L","22,4 L"],a:1,e:"2 mol HCl cần 1 mol Cl₂ → 0,5 mol HCl cần 0,25 mol Cl₂. V=0,25×22,4=5,6 L."},
+{ch:7,q:"Cho 5,6 g Fe tác dụng hết với Cl₂. Khối lượng FeCl₃ tạo thành là:",o:["12,7 g","16,25 g","32,5 g","8,125 g"],a:1,e:"n(Fe)=5,6/56=0,1 mol. 2Fe+3Cl₂→2FeCl₃ → n(FeCl₃)=0,1 mol. m=0,1×162,5=16,25 g."},
+{ch:7,q:"Dung dịch nào sau đây tác dụng được với AgNO₃ tạo kết tủa trắng không tan trong HNO₃?",o:["Na₂SO₄","NaNO₃","NaCl","Na₂CO₃"],a:2,e:"Ag⁺+Cl⁻→AgCl↓(trắng, không tan HNO₃). Na₂SO₄→AgSO₄(tan ít nhưng tan trong HNO₃); Na₂CO₃→Ag₂CO₃(trắng nhưng tan trong HNO₃)."},
+{ch:7,q:"Khi cho Cl₂ vào dung dịch NaBr, hiện tượng quan sát được là:",o:["Dung dịch không đổi màu","Dung dịch chuyển sang màu nâu đỏ","Dung dịch chuyển sang màu tím","Có kết tủa trắng"],a:1,e:"Cl₂+2NaBr→2NaCl+Br₂. Br₂ tạo thành làm dung dịch có màu nâu đỏ đặc trưng."},
+{ch:7,q:"Trong tự nhiên, halogen tồn tại chủ yếu ở dạng:",o:["Đơn chất","Hợp chất (muối halide)","Ion dương","Phân tử khí tự do"],a:1,e:"Do tính oxi hóa mạnh, halogen tồn tại dưới dạng hợp chất: NaCl, KCl, NaF, CaF₂... (muối halide)."},
+{ch:7,q:"Cho 3,65 g HCl tan trong 100 mL nước, nồng độ mol của HCl trong dung dịch là:",o:["0,5 mol/L","1 mol/L","2 mol/L","0,1 mol/L"],a:1,e:"n(HCl)=3,65/36,5=0,1 mol; V=100 mL=0,1 L. C=n/V=0,1/0,1=1 mol/L."},
+{ch:7,q:"Dùng thuốc thử AgNO₃ nhận biết 3 dung dịch NaCl, NaBr, NaI: hiện tượng lần lượt là:",o:["Cả 3 đều kết tủa trắng","AgCl trắng, AgBr vàng nhạt, AgI vàng","AgCl vàng, AgBr trắng, AgI không kết tủa","Cả 3 đều không tạo kết tủa"],a:1,e:"Ag⁺+Cl⁻→AgCl↓(trắng); Ag⁺+Br⁻→AgBr↓(vàng nhạt); Ag⁺+I⁻→AgI↓(vàng). Màu sắc khác nhau giúp nhận biết rõ ràng."},
+{ch:7,q:"Tại sao F₂ có tính oxi hóa mạnh nhất trong nhóm halogen?",o:["F có bán kính nguyên tử lớn nhất","F có độ âm điện lớn nhất và bán kính nhỏ nhất","F có nhiều electron nhất","F₂ dễ tan trong nước nhất"],a:1,e:"F: độ âm điện 3,98 (cao nhất), bán kính nhỏ (64 pm) → hút electron rất mạnh → tính oxi hóa mạnh nhất."}
+];
+
+let filtered=ALL, cur=0, correct=0, answered=0;
+const answered_map={};
+const labels=['A','B','C','D'];
+const chName={5:'Chương 5 — Năng lượng',6:'Chương 6 — Tốc độ',7:'Chương 7 — Halogen'};
+const chCls={5:'ch5-badge',6:'ch6-badge',7:'ch7-badge'};
+
+function setFilter(ch,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  filtered=ch===0?ALL:ALL.filter(q=>q.ch===ch);
+  cur=0; renderQ();
+}
+
+function renderQ(){
+  const q=filtered[cur];
+  if(!q){showSummary();return;}
+  const id=ALL.indexOf(q);
+  const ans=answered_map[id];
+  let html=`<div class="qcard">
+    <div class="qcard-top">
+      <div class="qmeta">
+        <span class="ch-badge ${chCls[q.ch]}">${chName[q.ch]}</span>
+        <span class="qnum-label">Câu ${cur+1} / ${filtered.length}</span>
+      </div>
+      <div class="qtext">${q.q}</div>
+    </div>
+    <div class="options">`;
+  q.o.forEach((opt,i)=>{
+    let cls='opt';
+    let icon='';
+    if(ans!==undefined){
+      cls+=' disabled';
+      if(i===q.a){ cls+=' correct'; icon='<span class="opt-icon">✓</span>'; }
+      else if(i===ans&&ans!==q.a){ cls+=' wrong'; icon='<span class="opt-icon">✗</span>'; }
+    }
+    html+=`<div class="${cls}" onclick="choose(${i})">
+      <span class="opt-label">${labels[i]}</span>
+      <span class="opt-text">${opt}</span>
+      ${icon}
+    </div>`;
+  });
+  html+=`</div>`;
+  if(ans!==undefined){
+    html+=`<div class="explain"><div class="explain-title">💡 Giải thích</div>${q.e}</div>`;
+  }
+  html+=`</div>`;
+  document.getElementById('qarea').innerHTML=html;
+  document.getElementById('qpos').textContent=`${cur+1} / ${filtered.length}`;
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').textContent=cur===filtered.length-1?'Xem kết quả ✓':'Câu sau →';
+  const pct=Math.round((cur/filtered.length)*100);
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('progLabel').textContent=`Câu ${cur+1} / ${filtered.length}`;
+  document.getElementById('progPct').textContent=pct+'%';
+  updateScore();
+}
+
+function choose(i){
+  const q=filtered[cur];
+  const id=ALL.indexOf(q);
+  if(answered_map[id]!==undefined) return;
+  answered_map[id]=i;
+  answered++;
+  if(i===q.a) correct++;
+  renderQ();
+}
+
+function go(dir){
+  if(dir===1&&cur===filtered.length-1){showSummary();return;}
+  cur=Math.max(0,Math.min(filtered.length-1,cur+dir));
+  renderQ();
+}
+
+function updateScore(){
+  document.getElementById('scorebox').textContent=`Điểm: ${correct} / ${answered}`;
+}
+
+function showSummary(){
+  const pct=answered>0?Math.round(correct/answered*100):0;
+  const emoji=pct>=80?'🎉':pct>=60?'👍':'📚';
+  const msg=pct>=80?'Xuất sắc! Bạn đã nắm vững kiến thức chương này!':pct>=60?'Khá tốt! Xem lại phần còn sai nhé!':'Cần ôn tập thêm — đừng nản, thử lại nào!';
+  const wrong=answered-correct;
+  const radius=54; const circ=2*Math.PI*radius;
+  const dashArr=circ*(pct/100);
+  document.getElementById('qarea').innerHTML=`<div class="summary">
+    <div class="summary-top">
+      <div class="summary-emoji">${emoji}</div>
+      <div class="summary-title">Kết quả luyện tập</div>
+      <div class="summary-sub">Bạn đã hoàn thành bộ câu hỏi!</div>
+    </div>
+    <div class="summary-body">
+      <div class="score-ring">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="${radius}" fill="none" stroke="#e2e8f0" stroke-width="12"/>
+          <circle cx="70" cy="70" r="${radius}" fill="none" stroke="#6366f1" stroke-width="12"
+            stroke-dasharray="${dashArr} ${circ}" stroke-linecap="round"/>
+        </svg>
+        <div class="score-ring-inner">
+          <div class="score-big">${pct}<span style="font-size:18px">%</span></div>
+          <div class="score-denom">${correct}/${answered}</div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="num" style="color:#16a34a">${correct}</div>
+          <div class="lbl">✓ Câu đúng</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" style="color:#dc2626">${wrong}</div>
+          <div class="lbl">✗ Câu sai</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">${answered}</div>
+          <div class="lbl">📝 Đã làm</div>
+        </div>
+        <div class="stat-card">
+          <div class="num">${filtered.length-answered}</div>
+          <div class="lbl">⏭ Bỏ qua</div>
+        </div>
+      </div>
+      <div class="msg-box">${msg}</div>
+      <button class="btn-restart" onclick="resetAll()">🔄 Làm lại từ đầu</button>
+    </div>
+  </div>`;
+  document.getElementById('qpos').textContent='';
+  document.getElementById('prevBtn').disabled=true;
+  document.getElementById('nextBtn').textContent='Câu sau →';
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('progPct').textContent='100%';
+}
+
+function resetAll(){
+  Object.keys(answered_map).forEach(k=>delete answered_map[k]);
+  correct=0; answered=0; cur=0;
+  updateScore(); renderQ();
+}
+
+renderQ();
+</script>
+</body>
+</html>
